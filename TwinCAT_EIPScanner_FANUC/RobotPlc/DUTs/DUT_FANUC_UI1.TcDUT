@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="DUT_FANUC_UI1" Id="{b034820e-af88-4c3d-9e6a-b5df4b6f2d60}">
+    <Declaration><![CDATA[TYPE DUT_FANUC_UI1 :
+STRUCT
+	UI01_IMSP :BIT;
+	UI02_Hold :BIT;
+	UI03_SFSP :BIT;
+	UI04_CycleStop :BIT;
+	UI05_FaultReset :BIT;
+	UI06_Start :BIT;
+	UI07_Home :BIT;
+	UI08_Enable :BIT;
+	UI09_RSR1,UI10_RSR2
+	,UI11_RSR3,UI12_RSR4
+	,UI13_RSR5,UI14_RSR6
+	,UI15_RSR7,UI16_RSR8:BIT;
+	UI17_PNSStrobe:BIT;
+	UI18_ProdStart :BIT;
+	UI19,UI20,UI21,UI22
+	,UI23,UI24,UI25,UI26
+	,UI27,UI28,UI29,UI30
+	,UI31,UI32 :BIT;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

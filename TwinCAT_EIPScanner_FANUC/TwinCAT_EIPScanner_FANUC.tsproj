@@ -1,5 +1,25 @@
 <?xml version="1.0"?>
 <TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.66">
+	<DataTypes>
+		<DataType>
+			<Name GUID="{FE565D85-927B-2D08-1043-124F5F921E35}" IecBaseType="true" AutoDeleteType="true">ARRAY [0..7] OF BYTE</Name>
+			<BitSize>64</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000001}">BYTE</BaseType>
+			<ArrayInfo>
+				<LBound>0</LBound>
+				<Elements>8</Elements>
+			</ArrayInfo>
+		</DataType>
+		<DataType>
+			<Name GUID="{18071995-0000-0000-0000-000300000020}" IecBaseType="true" AutoDeleteType="true">ARRAY [0..31] OF BYTE</Name>
+			<BitSize>256</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000001}">BYTE</BaseType>
+			<ArrayInfo>
+				<LBound>0</LBound>
+				<Elements>32</Elements>
+			</ArrayInfo>
+		</DataType>
+	</DataTypes>
 	<Project ProjectGUID="{8C9B388A-FECC-4121-8B8B-5DC54919D062}" TargetNetId="192.168.100.3.1.1" Target64Bit="true" ShowHideConfigurations="#x6">
 		<System>
 			<Settings MaxCpus="2" NonWinCpus="1">
@@ -9,13 +29,43 @@
 				<Task Id="3" Priority="20" CycleTime="100000" AmsPort="350" AdtTasks="true">
 					<Name>PlcTask</Name>
 				</Task>
+				<Task Id="4" Priority="1" CycleTime="10000" AmsPort="301">
+					<Name>EIP Scanner Task</Name>
+					<Vars VarGrpType="1" InsertType="1">
+						<Name>Inputs</Name>
+					</Vars>
+					<Vars VarGrpType="2" InsertType="1">
+						<Name>Outputs</Name>
+					</Vars>
+					<Image Id="2" AddrType="1" ImageType="1">
+						<Name>EIP Scanner Task-Image</Name>
+					</Image>
+				</Task>
 			</Tasks>
 		</System>
 		<Plc>
 			<Project GUID="{D6D9ED0B-D097-4E1B-A43A-40080298754A}" Name="RobotPlc" PrjFilePath="RobotPlc\RobotPlc.plcproj" TmcFilePath="RobotPlc\RobotPlc.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{EE33BDA5-1E16-E0CB-9B0B-6D0AC09F365C}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{819815B7-EC1A-65C4-DB7B-2B3AEAAD9448}">
 					<Name>RobotPlc Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
+					<Vars VarGrpType="1">
+						<Name>PlcTask Inputs</Name>
+						<Var>
+							<Name>MAIN.Robot1._rawIn</Name>
+							<Type GUID="{FE565D85-927B-2D08-1043-124F5F921E35}">ARRAY [0..7] OF BYTE</Type>
+						</Var>
+						<Var>
+							<Name>MAIN.Robot1._EIPConnectionState</Name>
+							<Type>UINT</Type>
+						</Var>
+					</Vars>
+					<Vars VarGrpType="2" AreaNo="1">
+						<Name>PlcTask Outputs</Name>
+						<Var>
+							<Name>MAIN.Robot1._rawOut</Name>
+							<Type GUID="{FE565D85-927B-2D08-1043-124F5F921E35}">ARRAY [0..7] OF BYTE</Type>
+						</Var>
+					</Vars>
 					<Contexts>
 						<Context>
 							<Id>0</Id>
@@ -33,5 +83,104 @@
 				</Instance>
 			</Project>
 		</Plc>
+		<Io>
+			<Device Id="1" DevType="133" AmsPort="28673" AmsNetId="192.168.100.3.2.1" RemoteName="Device 1 (TC3 EIP Scanner)">
+				<Name>Device 1 (TC3 EIP Scanner)</Name>
+				<AddressInfo>
+					<Pnp>
+						<DeviceDesc>Ethernet (TwinCAT-Intel PCI Ethernet Adapter)</DeviceDesc>
+						<DeviceName>\DEVICE\{1CEC5069-2D9B-498E-9307-9318A7060059}</DeviceName>
+						<DeviceData>001d92696cd7</DeviceData>
+					</Pnp>
+				</AddressInfo>
+				<Image Id="1" AddrType="1" ImageType="3">
+					<Name>Image</Name>
+				</Image>
+				<Box Id="1" BoxType="9134">
+					<Name>FANUC Robot R30iB+</Name>
+					<Comment><![CDATA[<INFO>
+192.168.2.2, FANUC Robot R30iB+ (ProdCode: 4, Rev: 3.01, Mac: 8c:8c:aa:d6:16:77)
+</INFO>
+<EDS>
+C:\TwinCAT\3.1\Config\Io\EtherNetIP\FANUCROBOT_EIP_V900.EDS
+</EDS>
+]]></Comment>
+					<ImageId>263</ImageId>
+					<Vars VarGrpType="1">
+						<Name>Inputs</Name>
+						<Var>
+							<Name>State</Name>
+							<Comment><![CDATA[0x8000 = Remote Node has no connections
+0x4000 = Remote Node is not reachable
+0x2000 = TCP Client: initialization failed
+0x1000 = UDP Client: initialization failed
+0x0X00 = reserved
+0x0001 = 1st Connection disconnected
+0x0002 = 2nd Connection disconnected
+0x0004 = 3rd Connection disconnected
+   ...
+0x0080 = 8th Connection disconnected
+]]></Comment>
+							<Type>UINT</Type>
+						</Var>
+					</Vars>
+					<Vars VarGrpType="2">
+						<Name>Outputs</Name>
+						<Var>
+							<Name>Ctrl</Name>
+							<Type>UINT</Type>
+						</Var>
+					</Vars>
+					<EthernetIp NewSlavePara="0100000046414e554320526f626f742052333069422b00000000000000000000000000000c00000064010000040000000301000044527474000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000202a8c000000000000000000000800001001e000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" EdsFilePath="FANUCROBOT_EIP_V900.EDS">
+						<MasterConnection Id="1" ConnectionPara="ffffd5802b00000000000000000000002b80d5ffaa550000000000000000000000000000000000000000000055aaffaa5500000000000055aaffd5802b0000000000002b80d5ffffd5802b0000000055aaffffaa55000000000000000055aaffffd5802b00000000000000002b80d5ffffffaa550000000000000000000055aad5802b00000000002b80d5d5802b00000000000055aaffd5d5d5ffffaa55000000000000000000000000002b80d5ffd5d5d5ffaa5500000000000000000000000055aaffd5802b55aaffffaa5500000000000000000000000055aaffffaa5500000000000055aaffd58080aaffffd5802b0000000000000000002b80d5ffaa5500000000000000000000000000000000000000002b80d5d5802b0000000000000055aaffd5802b00000000000000002b80d5ffd5802b00000055aaffffaa550000000000000000002b80d5ffd5802b00000000002b80d5ffd5802b0000000000000000000000000000000000000000000000000055aaffaa55000000000055aaffd5805580d5ffaa550000000000000000000000" AssemblyPara="010000a02000000020000000000000000400000065000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000200000097000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000001000000000000000200000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000800200424642c972c650000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" ConnectionType="-2147483587" ConnPathType="1">
+							<Name>Connection 1 (Input/Output)</Name>
+							<ImageId>86</ImageId>
+							<Vars VarGrpType="1" InsertType="1">
+								<Name>Inputs</Name>
+								<Var>
+									<Name>noname0_arrBYTE</Name>
+									<Type GUID="{18071995-0000-0000-0000-000300000020}">ARRAY [0..31] OF BYTE</Type>
+									<BitOffs>16</BitOffs>
+								</Var>
+							</Vars>
+							<Vars VarGrpType="2" InsertType="1">
+								<Name>Outputs</Name>
+								<Var>
+									<Name>noname0_arrBYTE</Name>
+									<Type GUID="{18071995-0000-0000-0000-000300000020}">ARRAY [0..31] OF BYTE</Type>
+									<BitOffs>16</BitOffs>
+								</Var>
+							</Vars>
+						</MasterConnection>
+					</EthernetIp>
+				</Box>
+				<Ethernet DeviceDesc="Ethernet (TwinCAT-Intel PCI Ethernet Adapter)" SpecialTask="true" TaskPort="301"/>
+				<EtherNetIPMasterDev m_EthIpMasterDevPar="010000004465766963652031202854433320454950205363616e6e6572290000000000000c0000006c00000089180000030100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000021d92696cd70102a8c000ffffff000000000000800001001e000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"/>
+			</Device>
+		</Io>
 	</Project>
+	<Mappings>
+		<MappingInfo Identifier="{00000000-2001-0850-0020-500810000403}" Id="#x02030020"/>
+		<MappingInfo Identifier="{00000000-0010-0304-2000-040310000403}" Id="#x02030010"/>
+		<OwnerA Name="TIPC^RobotPlc^RobotPlc Instance">
+			<OwnerB Name="TIID^Device 1 (TC3 EIP Scanner)^FANUC Robot R30iB+">
+				<Link VarA="PlcTask Inputs^MAIN.Robot1._rawIn" VarB="Connection 1 (Input/Output)^Inputs^noname0_arrBYTE[0]"/>
+				<Link VarA="PlcTask Inputs^MAIN.Robot1._rawIn" VarB="Connection 1 (Input/Output)^Inputs^noname0_arrBYTE[1]" Size="8" OffsA="8"/>
+				<Link VarA="PlcTask Inputs^MAIN.Robot1._rawIn" VarB="Connection 1 (Input/Output)^Inputs^noname0_arrBYTE[2]" Size="8" OffsA="16"/>
+				<Link VarA="PlcTask Inputs^MAIN.Robot1._rawIn" VarB="Connection 1 (Input/Output)^Inputs^noname0_arrBYTE[3]" Size="8" OffsA="24"/>
+				<Link VarA="PlcTask Inputs^MAIN.Robot1._rawIn" VarB="Connection 1 (Input/Output)^Inputs^noname0_arrBYTE[4]" Size="8" OffsA="32"/>
+				<Link VarA="PlcTask Inputs^MAIN.Robot1._rawIn" VarB="Connection 1 (Input/Output)^Inputs^noname0_arrBYTE[5]" Size="8" OffsA="40"/>
+				<Link VarA="PlcTask Inputs^MAIN.Robot1._rawIn" VarB="Connection 1 (Input/Output)^Inputs^noname0_arrBYTE[6]" Size="8" OffsA="48"/>
+				<Link VarA="PlcTask Inputs^MAIN.Robot1._rawIn" VarB="Connection 1 (Input/Output)^Inputs^noname0_arrBYTE[7]" Size="8" OffsA="56"/>
+				<Link VarA="PlcTask Outputs^MAIN.Robot1._rawOut" VarB="Connection 1 (Input/Output)^Outputs^noname0_arrBYTE[0]"/>
+				<Link VarA="PlcTask Outputs^MAIN.Robot1._rawOut" VarB="Connection 1 (Input/Output)^Outputs^noname0_arrBYTE[1]" Size="8" OffsA="8"/>
+				<Link VarA="PlcTask Outputs^MAIN.Robot1._rawOut" VarB="Connection 1 (Input/Output)^Outputs^noname0_arrBYTE[2]" Size="8" OffsA="16"/>
+				<Link VarA="PlcTask Outputs^MAIN.Robot1._rawOut" VarB="Connection 1 (Input/Output)^Outputs^noname0_arrBYTE[3]" Size="8" OffsA="24"/>
+				<Link VarA="PlcTask Outputs^MAIN.Robot1._rawOut" VarB="Connection 1 (Input/Output)^Outputs^noname0_arrBYTE[4]" Size="8" OffsA="32"/>
+				<Link VarA="PlcTask Outputs^MAIN.Robot1._rawOut" VarB="Connection 1 (Input/Output)^Outputs^noname0_arrBYTE[5]" Size="8" OffsA="40"/>
+				<Link VarA="PlcTask Outputs^MAIN.Robot1._rawOut" VarB="Connection 1 (Input/Output)^Outputs^noname0_arrBYTE[6]" Size="8" OffsA="48"/>
+				<Link VarA="PlcTask Outputs^MAIN.Robot1._rawOut" VarB="Connection 1 (Input/Output)^Outputs^noname0_arrBYTE[7]" Size="8" OffsA="56"/>
+			</OwnerB>
+		</OwnerA>
+	</Mappings>
 </TcSmProject>

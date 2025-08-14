@@ -1,13 +1,36 @@
-<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1">
-  <POU Name="MAIN" Id="{e81fdd85-a5af-4a5b-903d-7a3802be9cd8}">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="MAIN" Id="{e81fdd85-a5af-4a5b-903d-7a3802be9cd8}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
+	Robot1 :FB_FANUC_Basic;
+	bReset :BOOL;
+	bEnable :BOOL;
+	RobotEnable : BOOL;
+	RobotFault :BOOL;
+	
+	nUI1_Size : UDINT;
+	nUO1_Size : UDINT;
 END_VAR
-]]>
-    </Declaration>
+]]></Declaration>
     <Implementation>
-      <ST><![CDATA[]]></ST>
+      <ST><![CDATA[nUI1_Size := SIZEOF(DUT_FANUC_UI1);
+nUO1_Size := SIZEOF(DUT_FANUC_UO1);
+
+Robot1.Update();
+Robot1.Reset(iTrigger:=bReset);
+Robot1.Enable(iTrigger:=bEnable);
+RobotEnable:=Robot1.qEnable;
+RobotFault:=Robot1.qFault;
+]]></ST>
     </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="20" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="11" Count="3" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="16" Count="0" />
+    </LineIds>
   </POU>
 </TcPlcObject>

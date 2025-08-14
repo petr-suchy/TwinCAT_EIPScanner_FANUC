@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="FB_FANUC_Basic" Id="{d8361be0-a695-4cd7-af64-af0d44a691af}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_FANUC_Basic
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+	qEnable:BOOL;
+	qFault:BOOL;
+END_VAR
+VAR
+	_rawIn AT %I*:ARRAY[0..7]OF BYTE;
+	_rawOut AT %Q*:ARRAY[0..7]OF BYTE;
+	_EIPConnectionState AT %i*:UINT;
+	_UI1:DUT_FANUC_UI1;
+	_UO1:DUT_FANUC_UO1;
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Enable" Id="{0bf52179-a93a-4419-870a-1b3de78b9461}">
+      <Declaration><![CDATA[METHOD PUBLIC Enable : BOOL
+VAR_INPUT
+	iTrigger:BOOL;
+END_VAR
+VAR
+	_RobotEnable:BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_RobotEnable:=iTrigger AND NOT Fault();
+
+_UI1.UI01_IMSP:=_RobotEnable;
+_UI1.UI03_SFSP:=_RobotEnable;
+_UI1.UI08_Enable:=_RobotEnable;
+_UI1.UI02_Hold:=_RobotEnable;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Fault" Id="{4b1010de-e02c-43d3-b09d-7bc403f827ff}">
+      <Declaration><![CDATA[METHOD PROTECTED Fault : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Fault:=_UO1.UO06_Fault OR _UO1.UO09_BattAlarm;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{4f2083e8-6a7e-44e8-b73b-821d2cdaeea0}">
+      <Declaration><![CDATA[METHOD PUBLIC Reset : BOOL
+VAR_INPUT
+	iTrigger:BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_UI1.UI05_FaultReset:=iTrigger;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Update" Id="{958b983e-3529-4d9f-90a3-b98c26734e48}">
+      <Declaration><![CDATA[METHOD PUBLIC Update : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[MEMMOVE(
+destAddr:=ADR(_UO1)
+,srcAddr:=ADR(_rawIn[0])
+,n:=4
+);
+
+
+MEMMOVE(
+destAddr:=ADR(_rawOut[0])
+,srcAddr:=ADR(_UI1)
+,n:=4
+);
+
+
+qEnable:=_UO1.UO01_CmdEnabled AND _UO1.UO02_SystemReady;
+qFault:=Fault();
+]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_FANUC_Basic">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FANUC_Basic.Enable">
+      <LineId Id="9" Count="4" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="14" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FANUC_Basic.Fault">
+      <LineId Id="5" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_FANUC_Basic.Reset">
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_FANUC_Basic.Update">
+      <LineId Id="6" Count="14" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="21" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
