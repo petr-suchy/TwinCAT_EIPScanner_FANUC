@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="FB_FRProgSelect" Id="{e1e1f429-26c5-42f8-87cb-87e9250da7e5}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_FRProgSelect
+VAR_INPUT
+	Connection : REFERENCE TO ST_FRConnection;
+	Execute : BOOL;
+	PNS : USINT;
+END_VAR
+VAR_OUTPUT
+	Done : BOOL;
+	Busy : BOOL;
+	SNO : USINT;
+END_VAR
+VAR
+	stFRUOPIn : POINTER TO ST_FRUOPIn;
+	stFRUOPOut : POINTER TO ST_FRUOPOut;
+	
+	eProgState : (WAIT_EXEC, PNSSTROBE_TRIG, PNSSTROBE, WAIT_SNACK_DOWN, PROD_START);
+	
+	fbExecuteRTrig : R_TRIG;
+	fbProdStartTON : TON := (PT := T#2S);
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[stFRUOPIn := ADR(Connection._rawOut);
+stFRUOPOut := ADR(Connection._rawIn);
+
+fbExecuteRTrig(CLK := Execute);
+
+IF fbExecuteRTrig.Q AND eProgState = WAIT_EXEC THEN
+	
+	stFRUOPIn^.UI09_RSR1_PNS1 := PNS.0;
+	stFRUOPIn^.UI10_RSR2_PNS2 := PNS.1;
+	stFRUOPIn^.UI11_RSR3_PNS3 := PNS.2;
+	stFRUOPIn^.UI12_RSR4_PNS4 := PNS.3;
+	stFRUOPIn^.UI13_RSR5_PNS5 := PNS.4;
+	stFRUOPIn^.UI14_RSR6_PNS6 := PNS.5;
+	stFRUOPIn^.UI15_RSR7_PNS7 := PNS.6;
+	stFRUOPIn^.UI16_RSR8_PNS8 := PNS.7;
+	
+	eProgState := PNSSTROBE;
+END_IF
+
+CASE eProgState OF
+	WAIT_EXEC:
+		// Wait for Execute raising edge.
+	PNSSTROBE:
+		Done := FALSE;
+		Busy := TRUE;
+		stFRUOPIn^.UI17_PNSStrobe := TRUE;
+		
+		IF stFRUOPOut^.UO19_SNACK THEN
+
+			SNO.0 := stFRUOPOut^.UO11_ACK1_SNO1;
+			SNO.1 := stFRUOPOut^.UO12_ACK2_SNO2;
+			SNO.2 := stFRUOPOut^.UO13_ACK3_SNO3;
+			SNO.3 := stFRUOPOut^.UO14_ACK4_SNO4;
+			SNO.4 := stFRUOPOut^.UO15_ACK5_SNO5;
+			SNO.5 := stFRUOPOut^.UO16_ACK6_SNO6;
+			SNO.6 := stFRUOPOut^.UO17_ACK7_SNO7;
+			SNO.7 := stFRUOPOut^.UO18_ACK8_SNO8;
+
+			eProgState := WAIT_SNACK_DOWN;
+		END_IF
+		
+	WAIT_SNACK_DOWN:
+		IF NOT stFRUOPOut^.UO19_SNACK THEN
+			eProgState := PROD_START;
+		END_IF
+	PROD_START:
+		stFRUOPIn^.UI18_ProdStart := TRUE;
+		fbProdStartTON(IN := TRUE);
+		
+		IF fbProdStartTON.Q OR stFRUOPOut^.UO03_PrgRunning THEN
+			stFRUOPIn^.UI17_PNSStrobe := FALSE;
+			stFRUOPIn^.UI18_ProdStart := FALSE;
+			fbProdStartTON(IN := FALSE);
+			Done := TRUE;
+			Busy := FALSE;
+			eProgState := WAIT_EXEC;
+		END_IF
+		
+END_CASE]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
