@@ -30,9 +30,6 @@
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\FB_FANUC_Basic.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="POUs\FB_FRPower.TcPOU">
       <SubType>Code</SubType>
     </Compile>
