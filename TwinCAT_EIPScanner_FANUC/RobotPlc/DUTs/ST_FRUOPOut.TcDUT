@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
-  <DUT Name="DUT_FANUC_UO1" Id="{c09c0fa8-a0f8-4e8a-8c3e-0c8df8403bf0}">
-    <Declaration><![CDATA[TYPE DUT_FANUC_UO1 :
+  <DUT Name="ST_FRUOPOut" Id="{c09c0fa8-a0f8-4e8a-8c3e-0c8df8403bf0}">
+    <Declaration><![CDATA[TYPE ST_FRUOPOut :
 STRUCT
 	UO01_CmdEnabled:BIT;
 	UO02_SystemReady:BIT;

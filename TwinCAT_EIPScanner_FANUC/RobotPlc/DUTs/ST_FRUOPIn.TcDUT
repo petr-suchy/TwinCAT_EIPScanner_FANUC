@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
-  <DUT Name="DUT_FANUC_UI1" Id="{b034820e-af88-4c3d-9e6a-b5df4b6f2d60}">
-    <Declaration><![CDATA[TYPE DUT_FANUC_UI1 :
+  <DUT Name="ST_FRUOPIn" Id="{b034820e-af88-4c3d-9e6a-b5df4b6f2d60}">
+    <Declaration><![CDATA[TYPE ST_FRUOPIn :
 STRUCT
-	UI01_IMSP :BIT;
+	UI01_IMSTP :BIT;
 	UI02_Hold :BIT;
-	UI03_SFSP :BIT;
+	UI03_SFSPD :BIT;
 	UI04_CycleStop :BIT;
 	UI05_FaultReset :BIT;
 	UI06_Start :BIT;

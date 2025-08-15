@@ -26,17 +26,17 @@ VAR_OUTPUT
 	Busy : BOOL;
 END_VAR
 VAR
-	stFRUOPIn : POINTER TO DUT_FANUC_UI1;
-	stFRUOPOut : POINTER TO DUT_FANUC_UO1;
+	stFRUOPIn : POINTER TO ST_FRUOPIn;
+	stFRUOPOut : POINTER TO ST_FRUOPOut;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[stFRUOPIn := ADR(Connection._rawOut);
 stFRUOPOut := ADR(Connection._rawIn);
 
-stFRUOPIn^.UI01_IMSP := IMSTP;
+stFRUOPIn^.UI01_IMSTP := IMSTP;
 stFRUOPIn^.UI02_Hold := Hold;
-stFRUOPIn^.UI03_SFSP := SFSPD;
+stFRUOPIn^.UI03_SFSPD := SFSPD;
 stFRUOPIn^.UI04_CycleStop := CycleStop;
 stFRUOPIn^.UI05_FaultReset := FaultReset;
 stFRUOPIn^.UI06_Start := Start;

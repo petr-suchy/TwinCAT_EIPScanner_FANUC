@@ -45,7 +45,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{D6D9ED0B-D097-4E1B-A43A-40080298754A}" Name="RobotPlc" PrjFilePath="RobotPlc\RobotPlc.plcproj" TmcFilePath="RobotPlc\RobotPlc.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="RobotPlc\RobotPlc.tmc" TmcHash="{6FE4D52E-1925-544D-958A-6280A3785510}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="RobotPlc\RobotPlc.tmc" TmcHash="{3D0A05CC-162F-9E61-AE8A-86A93B85C127}">
 					<Name>RobotPlc Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">
