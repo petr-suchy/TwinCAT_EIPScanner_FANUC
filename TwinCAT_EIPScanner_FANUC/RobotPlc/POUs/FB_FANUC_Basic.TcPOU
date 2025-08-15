@@ -9,8 +9,7 @@ VAR_OUTPUT
 	qFault:BOOL;
 END_VAR
 VAR
-	_rawIn AT %I*:ARRAY[0..7]OF BYTE;
-	_rawOut AT %Q*:ARRAY[0..7]OF BYTE;
+	_stConnection : ST_FRConnection;
 	_EIPConnectionState AT %i*:UINT;
 	_UI1:DUT_FANUC_UI1;
 	_UO1:DUT_FANUC_UO1;
@@ -65,13 +64,13 @@ END_VAR
       <Implementation>
         <ST><![CDATA[MEMMOVE(
 destAddr:=ADR(_UO1)
-,srcAddr:=ADR(_rawIn[0])
+,srcAddr:=ADR(_stConnection._rawIn[0])
 ,n:=4
 );
 
 
 MEMMOVE(
-destAddr:=ADR(_rawOut[0])
+destAddr:=ADR(_stConnection._rawOut[0])
 ,srcAddr:=ADR(_UI1)
 ,n:=4
 );
@@ -82,25 +81,5 @@ qFault:=Fault();
 ]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="FB_FANUC_Basic">
-      <LineId Id="9" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_FANUC_Basic.Enable">
-      <LineId Id="9" Count="4" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="14" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_FANUC_Basic.Fault">
-      <LineId Id="5" Count="1" />
-    </LineIds>
-    <LineIds Name="FB_FANUC_Basic.Reset">
-      <LineId Id="5" Count="0" />
-      <LineId Id="7" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_FANUC_Basic.Update">
-      <LineId Id="6" Count="14" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="21" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

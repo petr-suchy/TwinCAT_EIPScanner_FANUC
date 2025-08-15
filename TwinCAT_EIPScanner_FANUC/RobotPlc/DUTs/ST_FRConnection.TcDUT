@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_FRConnection" Id="{3998d349-dbd1-4588-b819-fbc9c6bf61fd}">
+    <Declaration><![CDATA[TYPE ST_FRConnection :
+STRUCT
+	_rawIn AT %I*:ARRAY[0..7]OF BYTE;
+	_rawOut AT %Q*:ARRAY[0..7]OF BYTE;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
