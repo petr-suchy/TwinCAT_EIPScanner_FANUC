@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="FB_FRPower" Id="{74af6192-b997-4de2-addf-2065993ee14e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_FRPower
+VAR_INPUT
+	Connection : REFERENCE TO ST_FRConnection;
+	IMSTP : BOOL;
+	Hold : BOOL;
+	SFSPD : BOOL;
+	CycleStop : BOOL;
+	FaultReset : BOOL;
+	Start : BOOL;
+	Home : BOOL;
+	Enable : BOOL;
+END_VAR
+VAR_OUTPUT
+	CmdEnabled : BOOL;
+	SystemReady : BOOL;
+	PrgRunning : BOOL;
+	PrgPaused : BOOL;
+	MotionHeld : BOOL;
+	Fault : BOOL;
+	AtPerch : BOOL;
+	TPEnabled : BOOL;
+	BattAlarm : BOOL;
+	Busy : BOOL;
+END_VAR
+VAR
+	stFRUOPIn : POINTER TO DUT_FANUC_UI1;
+	stFRUOPOut : POINTER TO DUT_FANUC_UO1;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[stFRUOPIn := ADR(Connection._rawOut);
+stFRUOPOut := ADR(Connection._rawIn);
+
+stFRUOPIn^.UI01_IMSP := IMSTP;
+stFRUOPIn^.UI02_Hold := Hold;
+stFRUOPIn^.UI03_SFSP := SFSPD;
+stFRUOPIn^.UI04_CycleStop := CycleStop;
+stFRUOPIn^.UI05_FaultReset := FaultReset;
+stFRUOPIn^.UI06_Start := Start;
+stFRUOPIn^.UI07_Home := Home;
+stFRUOPIn^.UI08_Enable := Enable;
+
+CmdEnabled := stFRUOPOut^.UO01_CmdEnabled;
+SystemReady := stFRUOPOut^.UO02_SystemReady;
+PrgRunning := stFRUOPOut^.UO03_PrgRunning;
+PrgPaused := stFRUOPOut^.UO04_PrgPaused;
+MotionHeld := stFRUOPOut^.UO05_MotionHeld;
+Fault := stFRUOPOut^.UO06_Fault;
+AtPerch := stFRUOPOut^.UO07_AtPerch;
+TPEnabled := stFRUOPOut^.UO08_TPEnabled;
+BattAlarm := stFRUOPOut^.UO09_BattAlarm;
+Busy := stFRUOPOut^.UO09_BattAlarm;
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

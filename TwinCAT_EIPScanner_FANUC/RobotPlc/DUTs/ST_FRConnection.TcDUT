@@ -3,8 +3,9 @@
   <DUT Name="ST_FRConnection" Id="{3998d349-dbd1-4588-b819-fbc9c6bf61fd}">
     <Declaration><![CDATA[TYPE ST_FRConnection :
 STRUCT
-	_rawIn AT %I*:ARRAY[0..7]OF BYTE;
-	_rawOut AT %Q*:ARRAY[0..7]OF BYTE;
+	_EIPConnectionState AT %I* : UINT;
+	_rawIn AT %I*:ARRAY[0..7] OF BYTE;
+	_rawOut AT %Q*:ARRAY[0..7] OF BYTE;
 END_STRUCT
 END_TYPE
 ]]></Declaration>
